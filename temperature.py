@@ -8,20 +8,33 @@ display = Lcd() # 16x2 LCD display module
 temp_sensor = MLX90614(bus, address=0x5A)
 
 
-try:
-    while True:
-        obj_temp = temp_sensor.get_object_1()
-        amb_temp = temp_sensor.get_ambient()
-        print(f"Ambient Temperature : {amb_temp}")
-        print(f"Object Temperature  : {obj_temp}")
-        print("Writing to display")
-        display.lcd_clear()
-        display.lcd_display_string("TEMPERATURE:", 1)
-        display.lcd_display_string(str(obj_temp), 2)
+def scan_temp_and_display():
+    """
+    scans the Temperature and returns it. Also displays into LCD driver
+    """
 
-        sleep(2)
-        display.lcd_clear()
+    obj_temp = temp_sensor.get_object_1()
+    amb_temp = temp_sensor.get_ambient()
 
-except KeyboardInterrupt:
-    print("Cleaning up!")
+    print(f"Ambient Temperature : {amb_temp}")
+    print(f"Object Temperature  : {obj_temp}")
+
+    print("Writing to display")
     display.lcd_clear()
+    display.lcd_display_string("TEMPERATURE:", 1)
+    display.lcd_display_string(str(obj_temp), 2)
+
+    return obj_temp
+
+if __name__ == '__main__':
+    try:
+        print("use CTRL-C for Keyboard Interrupt")
+        while True:
+            scan_temp_and_display()
+            print("pausing activity for 5 seconds")
+            sleep(5)
+    except KeyboardInterrupt:
+        print("Received KeyboardInterrupt")
+    finally:
+        print("Cleaning up")
+        display.lcd_clear()
