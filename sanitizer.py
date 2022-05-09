@@ -8,6 +8,9 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(ir_sensor,GPIO.IN)
 GPIO.setup(pump,GPIO.OUT)
 
+def cleanup():
+    GPIO.cleanup()
+
 
 def drop_solution(HAND_WAIT=5,DROP_LENGTH=2):
     """
@@ -50,4 +53,4 @@ if __name__ == '__main__':
         print("Received KeyboardInterrupt")
     finally:
         print("Cleaning up")
-        GPIO.cleanup()
+        cleanup()

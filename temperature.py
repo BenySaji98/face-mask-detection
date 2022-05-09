@@ -7,6 +7,9 @@ bus = SMBus(1)
 display = Lcd() # 16x2 LCD display module
 temp_sensor = MLX90614(bus, address=0x5A)
 
+def cleanup():
+    global display
+    display.lcd_clear()
 
 def scan_temp_and_display():
     """
@@ -37,4 +40,4 @@ if __name__ == '__main__':
         print("Received KeyboardInterrupt")
     finally:
         print("Cleaning up")
-        display.lcd_clear()
+        cleanup()

@@ -9,25 +9,18 @@ import time
 import cv2
 import os
 
-prototxtPath = None
-weightsPath = None
-maskNetPath = None
 faceNet = None
 maskNet = None
 vs = None
 
-def load_configs():
-    global prototxtPath, weightsPath, maskNetPath, faceNet, maskNet, vs
+def load_configs(prototxtPath, weightsPath, maskNetPath):
+    global faceNet, maskNet, vs
     """
     start and load the models and cameras
     """
 
     # load our serialized face detector model from disk
     print("[INFO] loading face detector model...")
-    if prototxtPath is None:
-        raise ValueError("no path to prototxt")
-    if weightsPath is None:
-        raise ValueError("No path to weights")
     faceNet = cv2.dnn.readNet(prototxtPath, weightsPath)
 
     # load the face mask detector model from disk
@@ -41,6 +34,10 @@ def load_configs():
     print("started")
 
 
+def cleanup():
+    cv2.destroyAllWindows()
+    if vs is not None:
+        vs.stop()
 
 def read_camera():
     """
@@ -167,7 +164,7 @@ if __name__ == '__main__':
     weightsPath = os.path.sep.join([args["face"],"res10_300x300_ssd_iter_140000.caffemodel"])
     maskNetPath = args['model']
 
-    load_configs()
+    load_configs(prototxtPath, weightsPath, maskNetPath)
 
 
     try:
@@ -197,6 +194,5 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print("Received KeyboardInterrupt")
     finally:
-        cv2.destroyAllWindows()
-        vs.stop()
+        cleanup()
         print("feed ended")
